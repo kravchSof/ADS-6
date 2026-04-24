@@ -3,7 +3,7 @@
 #include <string>
 #include "tpqueue.h"
 
-TEST(lab7, test1) {
+TEST(lab6, test1) {
     TPQueue<SYM> pqueue;
     pqueue.push(SYM{'a', 4});
     pqueue.push(SYM{'b', 7});
@@ -26,7 +26,7 @@ TEST(lab7, test1) {
     ASSERT_EQ(c4.ch, 'c');
 }
 
-TEST(lab7, test2) {
+TEST(lab6, test2) {
     TPQueue<SYM> pqueue;
     pqueue.push(SYM{'a', 4});
     pqueue.push(SYM{'b', 4});
@@ -36,7 +36,7 @@ TEST(lab7, test2) {
     ASSERT_EQ(c2.ch, 'b');
 }
 
-TEST(lab7, test3) {
+TEST(lab6, test3) {
     TPQueue<SYM> pqueue;
     pqueue.push(SYM{'a', 4});
     pqueue.push(SYM{'b', 4});
@@ -47,4 +47,46 @@ TEST(lab7, test3) {
     ASSERT_EQ(c1.ch, 'c');
     ASSERT_EQ(c2.ch, 'a');
     ASSERT_EQ(c3.ch, 'b');
+}
+
+TEST(lab6, test4) {
+    TPQueue<SYM> pqueue;
+    pqueue.push(SYM{'a', 4});
+    SYM c1 = pqueue.pop();
+    ASSERT_EQ(c1.ch, 'a');
+}
+
+TEST(lab6, test5) {
+    TPQueue<SYM> pqueue;
+    pqueue.push(SYM{'a', 4});
+    pqueue.push(SYM{'b', 9});
+    SYM c1 = pqueue.pop();
+    ASSERT_EQ(c1.ch, 'b');
+}
+
+TEST(lab6, test6) {
+    TPQueue<SYM> pqueue;
+    pqueue.push(SYM{'a', 4});
+    pqueue.push(SYM{'b', 4});
+    pqueue.push(SYM{'c', 4});
+    SYM c1 = pqueue.pop();
+    ASSERT_EQ(c1.ch, 'a');
+}
+
+TEST(lab6, test7) {
+    TPQueue<SYM> pqueue;
+    pqueue.push(SYM{'a', 4});
+    pqueue.push(SYM{'b', 3});
+    SYM c1 = pqueue.pop();
+    ASSERT_EQ(c1.ch, 'a');
+}
+
+TEST(lab6, test8) {
+    TPQueue<SYM> pqueue;
+    pqueue.push(SYM{'a', 3});
+    pqueue.push(SYM{'b', 1});
+    pqueue.push(SYM{'c', 2});
+    SYM c1 = pqueue.pop();
+    SYM c2 = pqueue.pop();
+    ASSERT_EQ(c2.ch, 'c');
 }
