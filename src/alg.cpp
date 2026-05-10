@@ -1,62 +1,105 @@
 // Copyright 2022 NNTU-CS
 #ifndef INCLUDE_TPQUEUE_H_
 #define INCLUDE_TPQUEUE_H_
-
+#include <iostream>
 template<typename T>
 class TPQueue {
  private:
-    struct Node {
-        T data;
-        Node* next;
-        explicit Node(const T& value) : data(value), next(nullptr) {}
-    };
-    Node* head;
-    int count;
+  struct Node {
+      T data;
+      Node* next;
+  };
+
+  Node* head;
+  size_t count;
+
+  Node* CreateNode(const T& value, Node* nextNode = nullptr) {
+      Node* temp = new Node;
+      temp->data = value;
+      temp->next = nextNode;
+      return temp;
+  }
 
  public:
-    TPQueue() : head(nullptr), count(0) {}
-    ~TPQueue() {
-        while (head != nullptr) {
-            Node* temp = head;
-            head = head->next;
-            delete temp;
+    TPQueue(): head(nullptr), count(0) {}
+
+    TPQueue(const TPQueue& other): count(other.count) {
+        Node* cur = other.head;
+        while (cur != nullptr) {
+            push(cur->data);
+            cur = cur->next;
         }
     }
-    void push(const T& item) {
-        Node* newNode = new Node(item);
-        if (head == nullptr || item.prior > head->data.prior) {
+
+    TPQueue(const TPQueue&& other) : head(other.head), count(other.count) {
+        other.head = nullptr;
+        other.count = 0;
+    }
+
+    TPQueue& operator=(const TPQueue&& other) {
+        if (this != &other) {
+            clear();
+            head = other.head;
+            count = other.count;
+            other.head = nullptr;
+            other.count = 0;
+        }
+        return *this;
+    }
+
+    TPQueue& operator=(const TPQueue& other) {
+        if (this != &other) {
+            clear();
+            Node* cur = other.head;
+            while (cur != nullptr) {
+                push(cur->data);
+                cur = cur->next;
+            }
+        }
+        return *this;
+    }
+
+    ~TPQueue() {
+        clear();
+    }
+
+    void push(const T& value) {
+        Node* newNode = CreateNode(value);
+        if (head == nullptr || value.prior > head->data.prior) {
             newNode->next = head;
             head = newNode;
-            count++;
+            ++count;
             return;
         }
-        Node* current = head;
-        while (current->next != nullptr &&
-            current->next->data.prior >= item.prior) {
-            current = current->next;
+
+        Node* cur = head;
+        while (cur->next != nullptr && cur->next->data.prior >= value.prior) {
+            cur = cur->next;
         }
-        newNode->next = current->next;
-        current->next = newNode;
-        count++;
+        newNode->next = cur->next;
+        cur->next = newNode;
+        ++count;
     }
+
     T pop() {
         if (head == nullptr) {
-            throw "Queue is empty";
+            throw std::out_of_range("Pqueue is empty");
         }
-        T result = head->data;
-        Node* temp = head;
+        Node* oldHead = head;
+        T result = oldHead->data;
         head = head->next;
-        delete temp;
-        count--;
+        delete oldHead;
+        --count;
         return result;
     }
 
-    bool isEmpty() const {
-        return head == nullptr;
-    }
-
-    int size() const {
-        return count;
+    void clear() {
+        while (head != nullptr) {
+            Node* tmp = head;
+            head = head->next;
+            delete tmp;
+        }
+        count = 0;
     }
 };
 
