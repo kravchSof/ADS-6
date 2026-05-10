@@ -2,62 +2,61 @@
 #ifndef INCLUDE_TPQUEUE_H_
 #define INCLUDE_TPQUEUE_H_
 
-#include <stdexcept>
-
 template<typename T>
 class TPQueue {
  private:
     struct Node {
         T data;
         Node* next;
-        explicit Node(const T& d) : data(d), next(nullptr) {}
+        explicit Node(const T& value) : data(value), next(nullptr) {}
     };
-
     Node* head;
+    int count;
 
  public:
-    TPQueue() : head(nullptr) {}
-
-    TPQueue(const TPQueue&) = delete;
-    TPQueue& operator=(const TPQueue&) = delete;
-
+    TPQueue() : head(nullptr), count(0) {}
     ~TPQueue() {
-        while (!empty()) {
-            pop();
+        while (head != nullptr) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
         }
     }
-
-    void push(const T& val) {
-        Node* newNode = new Node(val);
-
-        if (!head || val.prior > head->data.prior) {
+    void push(const T& item) {
+        Node* newNode = new Node(item);
+        if (head == nullptr || item.prior > head->data.prior) {
             newNode->next = head;
             head = newNode;
+            count++;
             return;
         }
-
-        Node* cur = head;
-        while (cur->next && cur->next->data.prior >= val.prior) {
-            cur = cur->next;
+        Node* current = head;
+        while (current->next != nullptr &&
+            current->next->data.prior >= item.prior) {
+            current = current->next;
         }
-        newNode->next = cur->next;
-        cur->next = newNode;
+        newNode->next = current->next;
+        current->next = newNode;
+        count++;
     }
-
     T pop() {
-        if (!head) {
-            throw std::runtime_error(
-                "TPQueue: попытка извлечения из пустой очереди");
+        if (head == nullptr) {
+            throw "Queue is empty";
         }
-        Node* temp = head;
         T result = head->data;
+        Node* temp = head;
         head = head->next;
         delete temp;
+        count--;
         return result;
     }
 
-    bool empty() const {
+    bool isEmpty() const {
         return head == nullptr;
+    }
+
+    int size() const {
+        return count;
     }
 };
 
